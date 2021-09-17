@@ -1,7 +1,6 @@
 {
-  "name": "desafiots",
+  "name": "desafio20",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
@@ -40,5 +39,14 @@
     "sqlite3": "^5.0.2",
     "typeorm": "^0.2.37",
     "uuid": "^8.3.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sefiroed/desafio20.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sefiroed/desafio20/issues"
+  },
+  "homepage": "https://github.com/sefiroed/desafio20#readme",
+  "description": ""
 }

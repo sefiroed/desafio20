@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Response } from 'express';
 import ProductosPersistencia from '../productos';
 import Productos from '../class/producto';
 import { contenido } from '../modules/app';
@@ -43,48 +43,49 @@ router.get('/listar', async (req, res) => {
 
 /*Listando los productos por id*/
 router.get('/listar/:id', async (req, res) => {
-    const id: number = parseInt(req.params.id);
-    const data = await miProducto.leerPorId(id);
-    if (!data) {
+
+  const id = (req.params.id);
+  const producto = id
+    ? await miProducto.leerPorId(id)
+    : await miProducto.leer();
+    if (!producto) {
       res.json({
         msg: 'Error producto no encontrado',
       });
-    }
-    res.json({
-      data,
-    });
+    }  
+  res.json({
+    data: producto,
   });
+  
+});
 
 
 /*Para agregar productos a nuestra api*/
 router.post('/guardar', async (req, res) => {
-    const body = req.body;
-    const producto = await miProducto.guardar(body);
-    res.json({
-      producto,
-    });
-    
-    //Se incrementa el lastID.lastID por que se va a guarda un nuevo valor.
-    lastID.lastID = lastID.lastID + 1;
 
-    const data = new Productos(
-      body.producto,
-      body.precio,
-      body.url,
-      lastID.lastID
-    );
-    productos.push(data);
-    dbIDs.push(lastID.lastID);
-
-    //Validando si el guarda es usado desde el form o via json/api
-    if (body.form === 'true') {
-      //Deprecated el form no se usa desde un submit, se reemplaza por websocket
-      res.redirect(301, '/');
-    } else {
+  const { nombre, precio, url } = req.body;
+  const producto = await miProducto.guardar(nombre, precio, url);
+    if (typeof nombre !== 'string'){
       res.json({
-        data,
+        Error: 'nombre tiene que ser string',
       });
     }
+    if (typeof precio !== 'number'){
+      res.json({
+        Error: 'precio tiene que ser un numero',
+      });
+    }
+    if (typeof url !== 'string'){
+      res.json({
+        Error: 'la url no es correcta',
+      });
+    }   
+
+  res.json({
+    msg: 'producto agregado con exito',
+    data: producto,
+  });
+  
 
 });
 
@@ -92,23 +93,43 @@ router.post('/guardar', async (req, res) => {
 
 /*Para actualizar productos por id*/  
 router.put('/actualizar/:id', async (req, res) => {
-    const body = req.body; 
-    const id = req.params.id;
-    const producto = await miProducto.actualizar(body,id);
-    res.json({
-      producto,
-    });
-  });  
+  const id = req.params.id;
+  const body = req.body;
+  await miProducto.actualizar(body,id);
+    if (typeof body.nombre !== 'string'){
+      res.json({
+        Error: 'nombre tiene que ser string',
+      });
+    }
+    if (typeof body.precio !== 'number'){
+      res.json({
+        Error: 'precio tiene que ser un numero',
+      });
+    }
+    if (typeof body.url !== 'string'){
+      res.json({
+        Error: 'la url no es correcta',
+      });
+    }  
+  res.json({
+    msg: 'producto actualizado con exito',
+  });
+});  
 
 /*Para borrar productos por id*/   
 router.delete('/borrar/:id', async (req, res) => {
-    const id = req.params.id;
-    const producto = await miProducto.borrar(id);
-    res.json({
-      msg: "The product was deleted",
-      producto,
-    });
-  });   
+  const id = req.params.id;
+  await miProducto.borrar(id);
+    if (id == ' '){
+      res.json({
+        Error: 'Producto no encotrado',
+      });
+    }
+
+  res.json({
+    msg: "The product was deleted",
+  });
+});   
 
 
 export default router;

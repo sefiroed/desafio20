@@ -1,6 +1,5 @@
-import * as model from '../schema/productschema'
 import mongoose from 'mongoose';
-import colors from 'colors';
+
 
 const URL = 'mongodb://localhost:27017/ecommerce';
 

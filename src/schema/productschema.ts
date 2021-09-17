@@ -1,13 +1,19 @@
-import Mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
-const productCollection = 'productos';
-
-const productSchema = new Mongoose.Schema({
-    id: {type: String},
-    nombre: {type: String, required: true},
-    precio: {type: Number, required: true},
-    url: {type: String, required: true}
-});
+const Schema = mongoose.Schema;
 
 
-export const productsSchema = Mongoose.model(productCollection, productSchema);
+interface Iproducts extends mongoose.Document {
+    nombre: string;
+    precio: number;
+    url: string;
+  }
+
+const productSchema = new Schema({
+    nombre: String,
+    precio: Number,
+    url: String
+})
+
+
+export const productsSchema = mongoose.model('productos', productSchema);

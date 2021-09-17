@@ -1,5 +1,6 @@
-// import {Mensaje} from '../entities/formatoknex'
+import { text } from 'express';
 import { Mensaje } from '../entities/formatoknex'
+import { messagesSchema } from '../schema/messageschema'
 
 
 
@@ -28,23 +29,34 @@ const objToJSON = (contenido:any) => {
 //Leer y devolver los mensajes en caso de que exista archivo de Mensaje.
 async function leerMessages() {
   
-  // const messages: Mensaje[] = await productsSchema.from('mensajes').select();
-  // return messages;
+  try {
+    return await messagesSchema.find({});
+  } catch (error) {
+    console.log('No hay mensajes en el listado');
+    return await [];
+  }
   
 };
 
 // Archivo a guardar con formato JSON
 async function guardarMessages(msn:any) {
-  console.log(msn);
-  const message: Mensaje = {
-  email: msn.email,
-  date: msn.date,
-  text: msn.text
+  try {
+    const msnNew: Mensaje = {
+      email: msn.email,
+      date: msn.date,
+      text: msn.text,
+    };
+    const message = new messagesSchema(msnNew);
+    return await message.save();
+  } catch (error) {
+    console.log('ERROR: No se pudo agregar un mensaje. ' + error);
   }
-  // const messages: Mensaje[] = await sqliteDB
-  // .from('mensajes')
-  // .insert(message);
-  // return messages;
+  // console.log(msn);
+  // const message: Mensaje = {
+  // email: msn.email,
+  // date: msn.date,
+  // text: msn.text
+  // }
 };
 
 
